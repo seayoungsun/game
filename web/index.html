@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏平台 - 跑得快</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- 登录/注册页面 -->
+    <div id="auth-page" class="page active">
+        <div class="auth-container">
+            <div class="auth-tabs">
+                <button class="tab-btn active" data-tab="login">登录</button>
+                <button class="tab-btn" data-tab="register">注册</button>
+            </div>
+            
+            <!-- 登录表单 -->
+            <form id="login-form" class="auth-form active" style="display: block;">
+                <h2>登录</h2>
+                <div class="form-group">
+                    <label>手机号</label>
+                    <input type="tel" name="phone" placeholder="请输入手机号" required>
+                </div>
+                <div class="form-group">
+                    <label>密码</label>
+                    <input type="password" name="password" placeholder="请输入密码" required>
+                </div>
+                <button type="submit" class="btn btn-primary">登录</button>
+                <div id="login-error" class="error-message"></div>
+            </form>
+            
+            <!-- 注册表单 -->
+            <form id="register-form" class="auth-form" style="display: none;">
+                <h2>注册</h2>
+                <div class="form-group">
+                    <label>手机号</label>
+                    <input type="tel" name="phone" placeholder="请输入手机号" required>
+                </div>
+                <div class="form-group">
+                    <label>密码</label>
+                    <input type="password" name="password" placeholder="至少6位" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label>昵称</label>
+                    <input type="text" name="nickname" placeholder="请输入昵称" required>
+                </div>
+                <button type="submit" class="btn btn-primary">注册</button>
+                <div id="register-error" class="error-message"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 主界面（登录后显示） -->
+    <div id="main-page" class="page">
+        <!-- 顶部导航 -->
+        <header class="header">
+            <div class="header-content">
+                <h1>🎮 游戏平台</h1>
+                <div class="user-info">
+                    <span id="user-nickname">用户</span>
+                    <span id="user-balance">余额: 0</span>
+                    <button id="logout-btn" class="btn btn-small">退出</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- 导航栏 -->
+        <nav class="nav">
+            <button class="nav-btn active" data-view="lobby">游戏大厅</button>
+            <button class="nav-btn" data-view="leaderboard">排行榜</button>
+            <button class="nav-btn" data-view="records">我的记录</button>
+            <button class="nav-btn" data-view="recharge">充值</button>
+            <button class="nav-btn" data-view="withdraw">提现</button>
+        </nav>
+
+        <!-- 游戏大厅 -->
+        <div id="lobby-view" class="view active">
+            <div class="container">
+                <div class="lobby-header">
+                    <h2>游戏大厅</h2>
+                    <div class="game-selector">
+                        <select id="game-type-select">
+                            <option value="">全部</option>
+                            <option value="running">跑得快</option>
+                            <option value="texas">德州扑克</option>
+                            <option value="bull">牛牛</option>
+                        </select>
+                        <button id="refresh-rooms-btn" class="btn btn-small">刷新</button>
+                        <button id="create-room-btn" class="btn btn-primary">创建房间</button>
+                    </div>
+                </div>
+
+                <!-- 房间列表 -->
+                <div id="rooms-list" class="rooms-grid">
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 排行榜 -->
+        <div id="leaderboard-view" class="view">
+            <div class="container">
+                <h2>排行榜</h2>
+                <div class="leaderboard-controls">
+                    <select id="lb-game-type">
+                        <option value="running">跑得快</option>
+                        <option value="texas">德州扑克</option>
+                        <option value="bull">牛牛</option>
+                    </select>
+                    <select id="lb-period">
+                        <option value="total">总榜</option>
+                        <option value="day">日榜</option>
+                        <option value="week">周榜</option>
+                        <option value="month">月榜</option>
+                    </select>
+                </div>
+                <div id="leaderboard-list"></div>
+            </div>
+        </div>
+
+        <!-- 我的记录 -->
+        <div id="records-view" class="view">
+            <div class="container">
+                <h2>我的记录</h2>
+                <div id="records-list"></div>
+            </div>
+        </div>
+
+        <!-- 充值页面 -->
+        <div id="recharge-view" class="view">
+            <div class="container">
+                <h2>USDT 充值</h2>
+                
+                <!-- 创建充值订单表单 -->
+                <div class="recharge-form-section" style="margin-bottom: 30px;">
+                    <h3>创建充值订单</h3>
+                    <form id="recharge-form" style="max-width: 500px;">
+                        <div class="form-group">
+                            <label for="recharge-amount">充值金额 (USDT)</label>
+                            <input type="number" id="recharge-amount" placeholder="请输入充值金额" min="1" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="recharge-chain-type">选择链类型</label>
+                            <select id="recharge-chain-type" required>
+                                <option value="">请选择</option>
+                                <option value="trc20">TRC20</option>
+                                <option value="erc20">ERC20</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">创建充值订单</button>
+                    </form>
+                </div>
+
+                <!-- 订单详情 -->
+                <div id="recharge-order-detail" class="recharge-order-detail" style="display: none; margin-top: 20px; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background: #fff;">
+                    <h3>订单详情</h3>
+                    <div id="order-info" class="order-info">
+                        <!-- 订单详情将在这里动态加载 -->
+                    </div>
+                    <div class="order-actions" style="margin-top: 15px; text-align: right;">
+                        <button id="refresh-order-btn" class="btn btn-secondary">刷新订单</button>
+                        <button id="check-order-btn" class="btn btn-success">检查交易</button>
+                    </div>
+                </div>
+
+                <!-- 充值记录列表 -->
+                <div class="recharge-history-section" style="margin-top: 30px;">
+                    <h3>充值记录</h3>
+                    <div id="recharge-orders-list" class="recharge-orders-list">
+                        <div class="loading">加载中...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 提现页面 -->
+        <div id="withdraw-view" class="view">
+            <div class="container">
+                <h2>USDT 提现</h2>
+                
+                <!-- 创建提现订单表单 -->
+                <div class="withdraw-form-section" style="margin-bottom: 30px;">
+                    <h3>创建提现订单</h3>
+                    <form id="withdraw-form" style="max-width: 500px;">
+                        <div class="form-group">
+                            <label for="withdraw-amount">提现金额 (USDT)</label>
+                            <input type="number" id="withdraw-amount" placeholder="请输入提现金额" min="10" step="0.01" required>
+                            <small style="color: #666;">最小提现金额：10 USDT</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="withdraw-chain-type">选择链类型</label>
+                            <select id="withdraw-chain-type" required>
+                                <option value="">请选择</option>
+                                <option value="trc20">TRC20</option>
+                                <option value="erc20">ERC20</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="withdraw-to-address">提现地址</label>
+                            <input type="text" id="withdraw-to-address" placeholder="请输入接收地址（TRC20或ERC20地址）" required>
+                            <small style="color: #666;">TRC20地址以T开头（34位），ERC20地址以0x开头（42位）</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">创建提现订单</button>
+                    </form>
+                </div>
+
+                <!-- 提现记录列表 -->
+                <div class="withdraw-history-section" style="margin-top: 30px;">
+                    <h3>提现记录</h3>
+                    <div id="withdraw-orders-list" class="withdraw-orders-list">
+                        <div class="loading">加载中...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 游戏房间页面 -->
+    <div id="room-page" class="page">
+        <div class="room-container">
+            <div class="room-header">
+                <h2 id="room-title">房间</h2>
+                <button id="leave-room-btn" class="btn btn-danger">离开房间</button>
+            </div>
+            
+            <div class="room-content">
+                <!-- 玩家列表 -->
+                <div class="players-section">
+                    <h3>玩家列表</h3>
+                    <div id="players-list" class="players-list"></div>
+                </div>
+
+                <!-- 游戏信息 -->
+                <div id="room-info" class="room-info">
+                    <div class="info-item">
+                        <label>房间ID:</label>
+                        <span id="room-id"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>游戏类型:</label>
+                        <span id="room-game-type"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>底注:</label>
+                        <span id="room-base-bet"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>状态:</label>
+                        <span id="room-status"></span>
+                    </div>
+                </div>
+
+                <!-- 房间操作 -->
+                <div id="room-actions" class="room-actions">
+                    <button id="ready-btn" class="btn btn-primary">准备</button>
+                    <button id="cancel-ready-btn" class="btn btn-secondary" style="display: none;">取消准备</button>
+                    <button id="start-game-btn" class="btn btn-success" style="display: none;">开始游戏</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 游戏界面 -->
+    <div id="game-page" class="page">
+        <div class="game-container">
+            <div class="game-header">
+                <h2 id="game-title">跑得快</h2>
+                <div class="game-info">
+                    <span>房间: <span id="game-room-id"></span></span>
+                    <span>回合: <span id="game-round">0</span></span>
+                    <span id="game-timer" class="timer">30</span>
+                </div>
+            </div>
+
+            <!-- 其他玩家区域 -->
+            <div id="opponents-area" class="opponents-area">
+                <!-- 动态生成玩家区域 -->
+            </div>
+
+            <!-- 出牌区域 -->
+            <div class="play-area">
+                <div class="last-cards">
+                    <div class="label">上次出牌:</div>
+                    <div id="last-cards-display" class="cards-display"></div>
+                    <div id="last-player-name" class="player-name"></div>
+                </div>
+            </div>
+
+            <!-- 我的手牌 -->
+            <div class="my-hand">
+                <div class="hand-header">
+                    <span>我的手牌 (<span id="my-card-count">0</span>张)</span>
+                    <div class="hand-actions">
+                        <button id="pass-btn" class="btn btn-secondary" disabled>过</button>
+                        <button id="play-btn" class="btn btn-primary" disabled>出牌</button>
+                    </div>
+                </div>
+                <div id="my-cards" class="cards-container">
+                    <!-- 手牌卡片 -->
+                </div>
+            </div>
+
+            <!-- 游戏结算弹窗 -->
+            <div id="settlement-modal" class="modal">
+                <div class="modal-content">
+                    <h3>游戏结束</h3>
+                    <div id="settlement-result"></div>
+                    <button id="close-settlement-btn" class="btn btn-primary">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 创建房间弹窗 -->
+    <div id="create-room-modal" class="modal">
+        <div class="modal-content">
+            <h3>创建房间</h3>
+            <form id="create-room-form">
+                <div class="form-group">
+                    <label>游戏类型</label>
+                    <select name="game_type" required>
+                        <option value="running">跑得快</option>
+                        <option value="texas">德州扑克</option>
+                        <option value="bull">牛牛</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>房间类型</label>
+                    <select name="room_type" required>
+                        <option value="quick">快速场</option>
+                        <option value="middle">中级场</option>
+                        <option value="high">高级场</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>底注</label>
+                    <input type="number" name="base_bet" value="10" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label>最大人数</label>
+                    <input type="number" name="max_players" value="4" min="2" max="10" required>
+                </div>
+                <div class="form-group">
+                    <label>房间密码（可选）</label>
+                    <input type="text" name="password" placeholder="留空则不设密码">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('create-room-modal')">取消</button>
+                    <button type="submit" class="btn btn-primary">创建</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 加入房间密码弹窗 -->
+    <div id="password-modal" class="modal">
+        <div class="modal-content">
+            <h3>输入房间密码</h3>
+            <form id="password-form">
+                <div class="form-group">
+                    <input type="password" name="password" placeholder="请输入房间密码" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('password-modal')">取消</button>
+                    <button type="submit" class="btn btn-primary">确定</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast 提示 -->
+    <div id="toast" class="toast"></div>
+
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/websocket.js"></script>
+    <script src="/static/js/game.js"></script>
+    <script src="/static/js/app.js"></script>
+    
+    <!-- 充值页面逻辑 -->
+    <script>
+        // 充值相关功能（在app.js中初始化）
+    </script>
+    
+    <script>
+        // 确保初始化在DOM加载后执行
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                console.log('前端应用初始化完成');
+            });
+        } else {
+            console.log('前端应用初始化完成');
+        }
+    </script>
+</body>
+</html>
+

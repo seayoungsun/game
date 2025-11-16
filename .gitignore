@@ -1,0 +1,46 @@
+# OS / Editors
+.DS_Store
+.idea/
+.vscode/
+
+# Logs
+logs/
+apps/*/logs/
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# Binaries / Executables
+bin/
+*.exe
+*.dll
+*.so
+*.dylib
+*.out
+
+# Build artifacts
+dist/
+build/
+
+# Node / Vue (admin-vue)
+admin-vue/node_modules/
+admin-vue/dist/
+admin-vue/.env
+admin-vue/.env.*
+admin-vue/.vite/
+admin-vue/.cache/
+
+# Go
+coverage.out
+
+# Caches
+**/.cache/
+**/.DS_Store
+
+# Docker local data (if any)
+docker/**/data/
+
+# Local configs
+configs/config.local.yaml
+
+

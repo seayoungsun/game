@@ -1,0 +1,22 @@
+{
+  "name": "game-platform-admin",
+  "version": "1.0.0",
+  "description": "游戏平台管理后台",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.3.4",
+    "vue-router": "^4.2.5",
+    "axios": "^1.6.2",
+    "ant-design-vue": "^4.2.3",
+    "@ant-design/icons-vue": "^7.0.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.5.0",
+    "vite": "^5.0.0"
+  }
+}

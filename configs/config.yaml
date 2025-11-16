@@ -1,0 +1,53 @@
+server:
+  mode: debug  # debug, release, test
+  port: 8080   # API服务端口
+  game_port: 8081  # 游戏服务器端口
+  admin_port: 8082  # 管理后台端口
+  machine_id: 0  # 机器ID（0-1023），多实例部署时每个实例使用不同ID，用于雪花算法生成唯一UID
+  read_timeout: 30
+  write_timeout: 30
+
+database:
+  host: localhost
+  port: 3306
+  user: root
+  password: root123
+  database: game_platform
+  max_open_conns: 100
+  max_idle_conns: 10
+  max_lifetime: 3600  # 秒
+
+redis:
+  host: localhost
+  port: 6379
+  password: ""
+  db: 0
+  pool_size: 10
+
+elasticsearch:
+  addresses:
+    - http://localhost:9200
+  username: "elastic"
+  password: "SHG++vWXQR3R1UOwvW24"
+
+jwt:
+  secret: "your-secret-key-change-in-production"
+  expiration: 24  # 小时
+
+log:
+  level: info  # debug, info, warn, error
+  output_path: "./logs"
+  max_size: 100    # MB
+  max_backups: 7
+  max_age: 30      # 天
+
+payment:
+  etherscan_api_key: "V9HYUIW5KMCZKBZ9V96MP5QVECSCN6QVAJ"  # Etherscan API Key（用于ERC20查询，需要注册获取）
+  master_mnemonic: "punch refuse plunge more target bundle motor draw tiger olympic clutch wreck"    # 主钱包助记词（必须配置，用于HD钱包派生地址，12或24个单词，空格分隔）
+                         # 示例：abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about
+                         # 注意：生产环境请使用环境变量或密钥管理服务，不要直接写在配置文件中
+                         # 警告：如果未配置助记词或助记词无效，服务将无法启动
+
+
+
+

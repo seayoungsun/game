@@ -1,0 +1,56 @@
+# 本地开发环境配置示例
+# 复制此文件为 config.local.yaml 并修改配置
+
+server:
+  mode: debug
+  port: 8080
+  game_port: 8081
+  read_timeout: 30
+  write_timeout: 30
+
+# 数据库配置（连接宝塔面板的MySQL 5.7）
+database:
+  host: localhost
+  port: 3306
+  user: root
+  password: CHANGE_THIS  # 修改为你的宝塔MySQL密码
+  database: game_platform
+  max_open_conns: 100
+  max_idle_conns: 10
+  max_lifetime: 3600
+
+# Redis配置（可选）
+redis:
+  host: localhost
+  port: 6379
+  password: ""
+  db: 0
+  pool_size: 10
+
+# Elasticsearch配置（本地开发可不用）
+elasticsearch:
+  addresses:
+    - http://localhost:9200
+  username: ""
+  password: ""
+
+jwt:
+  secret: "local-dev-secret-key-please-change"
+  expiration: 24
+
+log:
+  level: debug
+  output_path: "./logs"
+  max_size: 100
+  max_backups: 7
+  max_age: 30
+
+
+
+
+
+
+
+
+
+

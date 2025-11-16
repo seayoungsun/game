@@ -1,0 +1,116 @@
+version: '3.8'
+
+services:
+  # MySQL数据库（如果需要本地开发，可以注释掉这个服务）
+  # mysql:
+  #   image: mysql:5.7
+  #   container_name: kaifa-mysql
+  #   restart: unless-stopped
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: root123
+  #     MYSQL_DATABASE: game_platform
+  #     MYSQL_USER: gameuser
+  #     MYSQL_PASSWORD: gamepass123
+  #     TZ: Asia/Shanghai
+  #   ports:
+  #     - "3306:3306"
+  #   volumes:
+  #     - mysql_data:/var/lib/mysql
+  #     - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+  #   command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+  #   networks:
+  #     - kaifa-network
+
+  # Redis缓存（如果需要本地开发，可以注释掉这个服务）
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: kaifa-redis
+  #   restart: unless-stopped
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis_data:/data
+  #     - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+  #   command: redis-server /usr/local/etc/redis/redis.conf
+  #   networks:
+  #     - kaifa-network
+
+  # Elasticsearch
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: kaifa-elasticsearch
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - TZ=Asia/Shanghai
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    networks:
+      - kaifa-network
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+  # Kibana (ES可视化)
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    container_name: kaifa-kibana
+    restart: unless-stopped
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - TZ=Asia/Shanghai
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - kaifa-network
+
+  # Logstash (日志处理)
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.11.0
+    container_name: kaifa-logstash
+    restart: unless-stopped
+    volumes:
+      - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ./logstash/logstash.yml:/usr/share/logstash/config/logstash.yml
+    ports:
+      - "5044:5044"
+      - "9600:9600"
+    depends_on:
+      - elasticsearch
+    networks:
+      - kaifa-network
+
+  # Filebeat (日志采集)
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.11.0
+    container_name: kaifa-filebeat
+    restart: unless-stopped
+    user: root
+    volumes:
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ./logs:/var/log/app:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - elasticsearch
+      - logstash
+    networks:
+      - kaifa-network
+
+volumes:
+  mysql_data:
+  redis_data:
+  es_data:
+
+networks:
+  kaifa-network:
+    driver: bridge
+
