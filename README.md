@@ -21,7 +21,7 @@
 ### 1. 克隆项目
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/seayoungsun/game.git
 cd game
 ```
 
@@ -75,6 +75,7 @@ make run-admin
 - MySQL 5.7+/8.0+
 - Redis 7.0+
 - Node.js 18+（仅管理后台前端）
+- Elasticsearch
 
 ### 配置加载顺序
 1. 内置默认值：`internal/config/config.go`
@@ -213,7 +214,6 @@ docker-compose down
 - 部署指南：`docs/deployment_guide.md`
 - 其他专题：`docs/` 目录
 
-（已清理过时文档引用，不再包含详尽的接口逐条示例。）
 
 ---
 
