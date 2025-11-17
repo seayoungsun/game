@@ -20,7 +20,7 @@ build-linux: ## 交叉编译 Linux 版本（用于服务器）
 	@echo "编译API服务..."
 	cd apps/api && GOOS=linux GOARCH=amd64 go build -o ../../bin/api-linux .
 	@echo "编译游戏服务器..."
-	cd apps/game-server && GOOS=linux GOARCH=amd64 go build -o ../../bin/game-server-linux .
+	cd apps/game-server && GOOS=linux GOARCH=amd64 go build -o ../../bin/game-server-linux $$(find . -name "*.go" -not -path "./web/*" | tr '\n' ' ')
 	@echo "编译管理后台..."
 	cd apps/admin && GOOS=linux GOARCH=amd64 go build -o ../../bin/admin-linux .
 	@echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -35,7 +35,7 @@ build-linux-arm64: ## 交叉编译 Linux ARM64 版本
 	@echo "编译API服务..."
 	cd apps/api && GOOS=linux GOARCH=arm64 go build -o ../../bin/api-linux-arm64 .
 	@echo "编译游戏服务器..."
-	cd apps/game-server && GOOS=linux GOARCH=arm64 go build -o ../../bin/game-server-linux-arm64 .
+	cd apps/game-server && GOOS=linux GOARCH=arm64 go build -o ../../bin/game-server-linux-arm64 $$(find . -name "*.go" -not -path "./web/*" | tr '\n' ' ')
 	@echo "编译管理后台..."
 	cd apps/admin && GOOS=linux GOARCH=arm64 go build -o ../../bin/admin-linux-arm64 .
 	@echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -50,7 +50,7 @@ build-windows: ## 交叉编译 Windows 版本
 	@echo "编译API服务..."
 	cd apps/api && GOOS=windows GOARCH=amd64 go build -o ../../bin/api-windows.exe .
 	@echo "编译游戏服务器..."
-	cd apps/game-server && GOOS=windows GOARCH=amd64 go build -o ../../bin/game-server-windows.exe .
+	cd apps/game-server && GOOS=windows GOARCH=amd64 go build -o ../../bin/game-server-windows.exe $$(find . -name "*.go" -not -path "./web/*" | tr '\n' ' ')
 	@echo "编译管理后台..."
 	cd apps/admin && GOOS=windows GOARCH=amd64 go build -o ../../bin/admin-windows.exe .
 	@echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -65,7 +65,7 @@ build-darwin: ## 交叉编译 macOS 版本
 	@echo "编译API服务..."
 	cd apps/api && GOOS=darwin GOARCH=amd64 go build -o ../../bin/api-darwin-amd64 .
 	@echo "编译游戏服务器..."
-	cd apps/game-server && GOOS=darwin GOARCH=amd64 go build -o ../../bin/game-server-darwin-amd64 .
+	cd apps/game-server && GOOS=darwin GOARCH=amd64 go build -o ../../bin/game-server-darwin-amd64 $$(find . -name "*.go" -not -path "./web/*" | tr '\n' ' ')
 	@echo "编译管理后台..."
 	cd apps/admin && GOOS=darwin GOARCH=amd64 go build -o ../../bin/admin-darwin-amd64 .
 	@echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -80,7 +80,7 @@ build-darwin-arm64: ## 交叉编译 macOS ARM64 版本（Apple Silicon）
 	@echo "编译API服务..."
 	cd apps/api && GOOS=darwin GOARCH=arm64 go build -o ../../bin/api-darwin-arm64 .
 	@echo "编译游戏服务器..."
-	cd apps/game-server && GOOS=darwin GOARCH=arm64 go build -o ../../bin/game-server-darwin-arm64 .
+	cd apps/game-server && GOOS=darwin GOARCH=arm64 go build -o ../../bin/game-server-darwin-arm64 $$(find . -name "*.go" -not -path "./web/*" | tr '\n' ' ')
 	@echo "编译管理后台..."
 	cd apps/admin && GOOS=darwin GOARCH=arm64 go build -o ../../bin/admin-darwin-arm64 .
 	@echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
