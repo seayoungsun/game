@@ -58,6 +58,14 @@ func handleRoomCreated(c *gin.Context, req *RoomNotifyRequest) {
 		"room":    roomData,
 	}))
 
+	// 发布系统消息到 Kafka，通知所有实例订阅该房间的广播频道
+	if err := hubInstance.PublishSystemMessage("room_created", req.RoomID, nil); err != nil {
+		logger.Logger.Error("发布房间创建系统消息失败",
+			zap.String("room_id", req.RoomID),
+			zap.Error(err),
+		)
+	}
+
 	logger.Logger.Info("房间创建通知已广播",
 		zap.String("room_id", req.RoomID),
 		zap.Uint("creator_id", req.UserID),

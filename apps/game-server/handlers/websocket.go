@@ -22,6 +22,7 @@ type HubInterface interface {
 	GetUserClient(userID uint) ClientInterface
 	GetRoomClients(roomID string) []ClientInterface
 	BroadcastMessage(msg MessageInterface)
+	PublishSystemMessage(msgType, roomID string, data map[string]interface{}) error
 }
 
 // ClientInterface Client 接口
