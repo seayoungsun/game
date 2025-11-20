@@ -48,6 +48,37 @@ payment:
                          # 注意：生产环境请使用环境变量或密钥管理服务，不要直接写在配置文件中
                          # 警告：如果未配置助记词或助记词无效，服务将无法启动
 
+# 服务发现配置
+service_discovery:
+  enabled: false  # 是否启用服务发现
+  type: "consul"  # 类型: "consul" 或 "redis"
+  consul_addr: "localhost:8500"  # Consul 地址
+  health_check_interval: 10  # 健康检查间隔（秒）
+  health_check_timeout: 3    # 健康检查超时（秒）
+  deregister_after: 30       # 故障后自动注销时间（秒）
+  # Redis 相关配置（如果使用 Redis）
+  instance_ttl: 60           # 实例 TTL（秒）
+  heartbeat_interval: 30     # 心跳间隔（秒）
+
+# Kafka 配置
+kafka:
+  enabled: false  # 是否启用 Kafka
+  brokers:        # Kafka Broker 地址列表
+    - "localhost:9092"
+  topic_prefix: "game"  # Topic 前缀
+  consumer_group: "game-server-group"  # 消费者组名称
+  # Producer 配置
+  producer_acks: "all"  # acks: "0", "1", "all"
+  producer_retries: 3   # 重试次数
+  batch_size: 16384     # 批量大小（字节）
+  linger_ms: 10         # 等待时间（毫秒）
+  compression_type: "gzip"  # 压缩类型: "none", "gzip", "snappy", "lz4"
+  # Consumer 配置
+  consumer_auto_commit: false  # 是否自动提交
+  consumer_max_poll_records: 100  # 每次拉取最大记录数
+  fetch_min_bytes: 1024  # 最小拉取字节数
+  fetch_max_wait_ms: 100  # 最大等待时间（毫秒）
+
 
 
 
