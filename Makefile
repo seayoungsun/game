@@ -20,7 +20,7 @@ build-linux: ## 交叉编译 Linux 版本（用于服务器）
 	@echo "编译API服务..."
 	cd apps/api && GOOS=linux GOARCH=amd64 go build -o ../../bin/api-linux .
 	@echo "编译游戏服务器..."
-	cd apps/game-server && GOOS=linux GOARCH=amd64 go build -o ../../bin/game-server-linux $$(find . -name "*.go" -not -path "./web/*" | tr '\n' ' ')
+	cd apps/game-server && GOOS=linux GOARCH=amd64 go build -o ../../bin/game-server-linux .
 	@echo "编译管理后台..."
 	cd apps/admin && GOOS=linux GOARCH=amd64 go build -o ../../bin/admin-linux .
 	@echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -35,7 +35,7 @@ build-linux-arm64: ## 交叉编译 Linux ARM64 版本
 	@echo "编译API服务..."
 	cd apps/api && GOOS=linux GOARCH=arm64 go build -o ../../bin/api-linux-arm64 .
 	@echo "编译游戏服务器..."
-	cd apps/game-server && GOOS=linux GOARCH=arm64 go build -o ../../bin/game-server-linux-arm64 $$(find . -name "*.go" -not -path "./web/*" | tr '\n' ' ')
+	cd apps/game-server && GOOS=linux GOARCH=arm64 go build -o ../../bin/game-server-linux-arm64 .
 	@echo "编译管理后台..."
 	cd apps/admin && GOOS=linux GOARCH=arm64 go build -o ../../bin/admin-linux-arm64 .
 	@echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
